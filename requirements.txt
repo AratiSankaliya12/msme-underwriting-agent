@@ -1,0 +1,38 @@
+# ── LangGraph / LangChain Core ──────────────────────────────────
+langgraph==0.2.28
+langchain==0.3.7
+langchain-core==0.3.15
+langchain-anthropic==0.2.4      # Claude as our LLM backend
+langchain-openai==0.2.5         # GPT-4o fallback for vision tasks
+
+# ── PDF Parsing ──────────────────────────────────────────────────
+pdfplumber==0.11.4              # Text-layer PDF extraction
+camelot-py[cv]==0.11.0          # Table extraction from PDFs
+PyMuPDF==1.24.11                # Fast PDF rendering (for Camelot)
+
+# ── OCR (for scanned PDFs) ───────────────────────────────────────
+pytesseract==0.3.13             # Python wrapper for Tesseract OCR
+Pillow==10.4.0                  # Image processing (pytesseract needs this)
+pdf2image==1.17.0               # Converts PDF pages to images for OCR
+
+# ── Graph Analysis ───────────────────────────────────────────────
+networkx==3.3                   # Directed graph for transaction analysis
+
+# ── Data Handling ────────────────────────────────────────────────
+pandas==2.2.3                   # Transaction data manipulation
+numpy==1.26.4                   # Numerical operations
+python-dateutil==2.9.0          # Robust date parsing from bank statements
+
+# ── API / UI ─────────────────────────────────────────────────────
+fastapi==0.115.4                # REST API wrapper
+uvicorn==0.32.0                 # ASGI server for FastAPI
+streamlit==1.39.0               # Priya's interface
+
+# ── Database ─────────────────────────────────────────────────────
+sqlalchemy==2.0.36              # ORM for PostgreSQL/SQLite
+aiosqlite==0.20.0               # Async SQLite for MVP
+
+# ── Environment & Utilities ──────────────────────────────────────
+python-dotenv==1.0.1            # Load API keys from .env
+pydantic==2.9.2                 # Data validation (LangGraph uses this heavily)
+tenacity==9.0.0                 # Retry logic for API calls
