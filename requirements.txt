@@ -26,7 +26,7 @@ python-dateutil==2.9.0          # Robust date parsing from bank statements
 # ── API / UI ─────────────────────────────────────────────────────
 fastapi==0.115.4                # REST API wrapper
 uvicorn==0.32.0                 # ASGI server for FastAPI
-streamlit==1.39.0               # Priya's interface
+streamlit==1.39.0               # UI interface
 
 # ── Database ─────────────────────────────────────────────────────
 sqlalchemy==2.0.36              # ORM for PostgreSQL/SQLite
