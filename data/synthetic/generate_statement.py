@@ -34,7 +34,7 @@ def generate_transactions(num: int = 40) -> list[dict]:
     ]
 
     start_date = datetime(2023, 8, 1)
-    balance = 125000.00
+    opening_balance = 125000.00
     transactions = []
 
     for i in range(num):
@@ -45,34 +45,56 @@ def generate_transactions(num: int = 40) -> list[dict]:
         amount = round(base_amount * random.uniform(0.85, 1.15), 2)
         date = start_date + timedelta(days=random.randint(0, 364))
 
+        transactions.append(
+            {
+                "date": date.strftime("%d/%m/%Y"),
+                "description": description,
+                "direction": direction,
+                "amount": amount,
+            }
+        )
+
+    # Sort by date
+    transactions.sort(key=lambda x: datetime.strptime(x["date"], "%d/%m/%Y"))
+
+    # Calculate running balance AFTER sorting
+    balance = opening_balance
+    formatted_transactions = []
+
+    for txn in transactions:
+        direction = txn["direction"]
+        amount = txn["amount"]
+
         if direction == "credit":
             balance += amount
-            transactions.append(
+
+            formatted_transactions.append(
                 {
-                    "date": date.strftime("%d/%m/%Y"),
-                    "description": description,
+                    "date": txn["date"],
+                    "description": txn["description"],
                     "debit": "",
                     "credit": f"{amount:,.2f}",
                     "balance": f"{balance:,.2f}",
                 }
             )
+
         else:
             balance -= amount
+
             if balance < 0:
                 balance = abs(balance)  # keep positive for realism
-            transactions.append(
+
+            formatted_transactions.append(
                 {
-                    "date": date.strftime("%d/%m/%Y"),
-                    "description": description,
+                    "date": txn["date"],
+                    "description": txn["description"],
                     "debit": f"{amount:,.2f}",
                     "credit": "",
                     "balance": f"{balance:,.2f}",
                 }
             )
 
-    # Sort by date
-    transactions.sort(key=lambda x: datetime.strptime(x["date"], "%d/%m/%Y"))
-    return transactions
+    return formatted_transactions
 
 
 def create_hdfc_statement(output_path: str = "data/synthetic/hdfc_sample.pdf"):
@@ -103,16 +125,20 @@ def create_hdfc_statement(output_path: str = "data/synthetic/hdfc_sample.pdf"):
         ("Branch", "Surat Main Branch, Gujarat"),
         ("Statement Period", "01/08/2023 to 31/07/2024"),
     ]
+
     for label, value in details:
         pdf.set_font("Helvetica", "B", 8)
         pdf.cell(50, 6, label + ":", new_x="RIGHT", new_y="LAST")
+
         pdf.set_font("Helvetica", "", 8)
         pdf.cell(0, 6, value, new_x="LMARGIN", new_y="NEXT")
+
     pdf.ln(6)
 
     # ── Transaction Table Header ──────────────────────────────────
     pdf.set_fill_color(220, 230, 242)
     pdf.set_font("Helvetica", "B", 8)
+
     headers = [
         ("Date", 25),
         ("Description", 85),
@@ -123,13 +149,16 @@ def create_hdfc_statement(output_path: str = "data/synthetic/hdfc_sample.pdf"):
 
     for header, width in headers:
         pdf.cell(width, 8, header, border=1, fill=True, align="C")
+
     pdf.ln()
 
     # ── Transaction Rows ─────────────────────────────────────────
     transactions = generate_transactions(40)
+
     pdf.set_font("Helvetica", "", 7)
 
     for i, txn in enumerate(transactions):
+
         # Alternate row shading
         if i % 2 == 0:
             pdf.set_fill_color(245, 248, 252)
@@ -141,12 +170,15 @@ def create_hdfc_statement(output_path: str = "data/synthetic/hdfc_sample.pdf"):
         pdf.cell(25, 6, txn["debit"], border=1, fill=True, align="R")
         pdf.cell(25, 6, txn["credit"], border=1, fill=True, align="R")
         pdf.cell(30, 6, txn["balance"], border=1, fill=True, align="R")
+
         pdf.ln()
 
     # ── Footer ────────────────────────────────────────────────────
     pdf.ln(8)
+
     pdf.set_font("Helvetica", "I", 7)
     pdf.set_text_color(120, 120, 120)
+
     pdf.cell(
         0,
         5,
@@ -155,6 +187,7 @@ def create_hdfc_statement(output_path: str = "data/synthetic/hdfc_sample.pdf"):
     )
 
     pdf.output(output_path)
+
     print(f"✅ Synthetic statement generated: {output_path}")
 
 
