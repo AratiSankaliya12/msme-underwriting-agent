@@ -8,7 +8,6 @@
 import pdfplumber
 import logging
 from pathlib import Path
-from typing import Optional
 from dataclasses import dataclass, field
 
 logger = logging.getLogger(__name__)
@@ -64,7 +63,7 @@ def _assess_confidence(doc: ParsedDocument) -> str:
         return "HIGH"
 
 
-def _is_text_layer_present(page: pdfplumber.page.Page) -> bool:
+def _is_text_layer_present(page) -> bool:
     """
     Detects whether a PDF page has a real text layer or is just an image.
 
